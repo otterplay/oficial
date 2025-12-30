@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="OtterPlay - Streaming de anime con sistema de monedas inteligente">
+    <meta name="theme-color" content="#0a1a2a">
+    <title>OtterPlay | Streaming</title>
+    <link rel="icon" type="image/png" href="https://img.icons8.com/color/96/000000/otter.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div class="permission-modal hidden" id="permissionModal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3><i class="fas fa-shield-alt"></i> Permisos Requeridos</h3>
+            </div>
+            <div class="modal-body">
+                <div class="permission-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <h4>Geolocalización</h4>
+                        <p>Para recomendaciones personalizadas</p>
+                    </div>
+                </div>
+                <div class="permission-item">
+                    <i class="fas fa-bell"></i>
+                    <div>
+                        <h4>Notificaciones</h4>
+                        <p>Alertas de consumo y nuevos episodios</p>
+                    </div>
+                </div>
+                <div class="permission-item">
+                    <i class="fas fa-hdd"></i>
+                    <div>
+                        <h4>Almacenamiento</h4>
+                        <p>Cache para carga más rápida</p>
+                    </div>
+                </div>
+                <button class="btn-primary" id="grantPermissions">
+                    <i class="fas fa-check"></i> Permitir
+                </button>
+                <button class="btn-secondary" id="skipPermissions">
+                    <i class="fas fa-times"></i> Saltar
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-container">
+            <div class="logo-header">
+                <div class="logo-animation">
+                    <div class="otter-icon">
+                        <img src="favicon.png" alt="OtterPlay" style="width:64px;height:64px;">
+                    </div>
+                    <h1>OtterPlay</h1>
+                </div>
+                <p class="tagline">El río del anime sin límites</p>
+            </div>
+            <div class="access-options">
+                <div class="option-card" data-option="free">
+                    <div class="option-header">
+                        <i class="fas fa-water"></i>
+                        <h3>Nado Libre</h3>
+                    </div>
+                    <div class="option-features">
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>300 gotas iniciales</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Todo el anime gratis</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-times"></i>
+                            <span>Consumo: 50 gotas/día</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-times"></i>
+                            <span>IP bloqueada al agotar</span>
+                        </div>
+                    </div>
+                    <button class="option-select" data-option="free">
+                        <i class="fas fa-bolt"></i> Acceso Rápido
+                    </button>
+                    <p class="option-note">Usuario automático • Sin registro</p>
+                </div>
+                <div class="option-card vip" data-option="vip">
+                    <div class="option-header">
+                        <i class="fas fa-crown"></i>
+                        <h3>Manada Otter</h3>
+                    </div>
+                    <div class="option-features">
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>3000 gotas (1 mes)</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Sin bloqueos de IP</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Contenido exclusivo</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Renovación automática</span>
+                        </div>
+                    </div>
+                    <button class="option-select vip-btn" data-option="vip">
+                        <i class="fas fa-gem"></i> $9.99/mes
+                    </button>
+                    <p class="option-note">Pago seguro • 7 días gratis</p>
+                </div>
+            </div>
+            <div class="vip-preview">
+                <h4><i class="fas fa-users"></i> Otter VIP Activos</h4>
+                <div class="vip-scroll" id="vipPreview"></div>
+            </div>
+        </div>
+    </div>
+    <div class="app-container hidden" id="appContainer">
+        <header class="app-header">
+            <div class="header-main">
+                <div class="brand">
+                    <i class="fas fa-otter"></i>
+                    <span>OtterPlay</span>
+                </div>
+                <div class="user-section">
+                    <div class="user-profile">
+                        <div class="avatar" id="userAvatar">O</div>
+                        <div class="user-info">
+                            <div class="user-name" id="userName">Usuario</div>
+                            <div class="user-status" id="userStatus">
+                                <span class="status-dot"></span>
+                                <span id="statusText">Nadando</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="coins-display">
+                        <i class="fas fa-water"></i>
+                        <div class="coins-info">
+                            <span class="coins-amount" id="coinsAmount">300</span>
+                            <span class="coins-label">gotas</span>
+                        </div>
+                    </div>
+                    <button class="header-btn logout" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+            <nav class="nav-tabs">
+                <button class="nav-tab active" data-tab="trending">
+                    <i class="fas fa-fire"></i>
+                    <span>Trending</span>
+                </button>
+                <button class="nav-tab" data-tab="airing">
+                    <i class="fas fa-satellite-dish"></i>
+                    <span>En Emisión</span>
+                </button>
+                <button class="nav-tab" data-tab="upcoming">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Próximos</span>
+                </button>
+                <button class="nav-tab" data-tab="favorites">
+                    <i class="fas fa-star"></i>
+                    <span>Favoritos</span>
+                </button>
+            </nav>
+        </header>
+        <main class="app-main">
+            <div class="hero-banner">
+                <div class="hero-content">
+                    <h2 id="heroTitle">Sumérgete en el Anime</h2>
+                    <p id="heroSubtitle">Miles de series • Actualización automática • Sin anuncios</p>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <span class="stat-value" id="daysLeft">6 días</span>
+                                <span class="stat-label">Restantes</span>
+                            </div>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-bolt"></i>
+                            <div>
+                                <span class="stat-value">50</span>
+                                <span class="stat-label">Gotas/día</span>
+                            </div>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-sync-alt"></i>
+                            <div>
+                                <span class="stat-value" id="lastUpdate">Ahora</span>
+                                <span class="stat-label">Actualizado</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-actions">
+                    <button class="btn-upgrade" id="upgradeBtn">
+                        <i class="fas fa-crown"></i>
+                        <span>Mejorar a VIP</span>
+                    </button>
+                    <button class="btn-refresh" id="refreshContent">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Actualizar</span>
+                    </button>
+                </div>
+            </div>
+            <div class="content-section">
+                <div class="section-header">
+                    <h3 id="sectionTitle">Anime Trending</h3>
+                    <div class="section-controls">
+                        <div class="view-toggle">
+                            <button class="view-btn active" data-view="grid">
+                                <i class="fas fa-th-large"></i>
+                            </button>
+                            <button class="view-btn" data-view="list">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div>
+                        <div class="filter-select">
+                            <select id="genreFilter">
+                                <option value="">Todos los géneros</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-container grid-view" id="contentContainer">
+                </div>
+                <div class="loading-indicator hidden" id="loadingIndicator">
+                    <div class="spinner"></div>
+                    <p>Cargando anime...</p>
+                </div>
+                <div class="load-more hidden" id="loadMore">
+                    <button class="btn-load" id="loadMoreBtn">
+                        <i class="fas fa-plus"></i>
+                        Cargar más anime
+                    </button>
+                </div>
+            </div>
+        </main>
+        <div class="player-modal hidden" id="playerModal">
+            <div class="modal-overlay" id="modalOverlay"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="animeTitle">Título del Anime</h3>
+                    <button class="close-modal" id="closeModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="anime-player">
+                        <div class="player-placeholder">
+                            <i class="fas fa-play-circle"></i>
+                            <p>Reproducción en OtterPlay</p>
+                            <div class="player-loading">
+                                <div class="loading-bar"></div>
+                            </div>
+                        </div>
+                        <div class="player-info">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="label">Episodios</span>
+                                    <span class="value" id="infoEpisodes">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Género</span>
+                                    <span class="value" id="infoGenre">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Estudio</span>
+                                    <span class="value" id="infoStudio">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Rating</span>
+                                    <span class="value" id="infoRating">-</span>
+                                </div>
+                            </div>
+                            <p class="synopsis" id="infoSynopsis"></p>
+                            <div class="episode-selector">
+                                <h4><i class="fas fa-list-ol"></i> Episodios</h4>
+                                <div class="episode-grid" id="episodeGrid"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="streaming-recommendations">
+                        <h4><i class="fas fa-external-link-alt"></i> También disponible en:</h4>
+                        <div class="platforms">
+                            <a href="https://crunchyroll.com" target="_blank" class="platform">
+                                <i class="fab fa-crunchyroll"></i>
+                                <span>Crunchyroll</span>
+                            </a>
+                            <a href="https://netflix.com" target="_blank" class="platform">
+                                <i class="fab fa-netflix"></i>
+                                <span>Netflix</span>
+                            </a>
+                            <a href="https://funimation.com" target="_blank" class="platform">
+                                <i class="fas fa-tv"></i>
+                                <span>Funimation</span>
+                            </a>
+                            <a href="https://hidive.com" target="_blank" class="platform">
+                                <i class="fas fa-play"></i>
+                                <span>HIDIVE</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="consumption-alert">
+                        <i class="fas fa-water"></i>
+                        <div>
+                            <strong>Consumo de 50 gotas</strong>
+                            <p>Este episodio usará tus gotas diarias</p>
+                        </div>
+                    </div>
+                    <button class="btn-play" id="playEpisodeBtn">
+                        <i class="fas fa-play"></i>
+                        <span>Reproducir Episodio 1</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="upgrade-modal hidden" id="upgradeModal">
+            <div class="modal-overlay"></div>
+            <div class="modal-content small">
+                <div class="modal-header">
+                    <h3><i class="fas fa-crown"></i> Unirse a la Manada</h3>
+                    <button class="close-modal" id="closeUpgrade">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="vip-benefits">
+                        <div class="benefit">
+                            <i class="fas fa-water"></i>
+                            <div>
+                                <strong>3000 gotas</strong>
+                                <span>1 mes completo</span>
+                            </div>
+                        </div>
+                        <div class="benefit">
+                            <i class="fas fa-shield-alt"></i>
+                            <div>
+                                <strong>IP protegida</strong>
+                                <span>Sin bloqueos</span>
+                            </div>
+                        </div>
+                        <div class="benefit">
+                            <i class="fas fa-rocket"></i>
+                            <div>
+                                <strong>Acceso anticipado</strong>
+                                <span>Nuevos episodios</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="payment-methods">
+                        <h4>Método de pago</h4>
+                        <div class="methods-grid">
+                            <button class="method-btn active" data-method="card">
+                                <i class="fas fa-credit-card"></i>
+                                <span>Tarjeta</span>
+                            </button>
+                            <button class="method-btn" data-method="paypal">
+                                <i class="fab fa-paypal"></i>
+                                <span>PayPal</span>
+                            </button>
+                            <button class="method-btn" data-method="crypto">
+                                <i class="fas fa-coins"></i>
+                                <span>Cripto</span>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="btn-confirm" id="confirmPayment">
+                        <i class="fas fa-lock"></i>
+                        <span>Activar VIP • $9.99/mes</span>
+                    </button>
+                    <p class="secure-note">
+                        <i class="fas fa-shield-alt"></i>
+                        Pago seguro • Cancelación instantánea
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="block-modal hidden" id="blockModal">
+            <div class="modal-overlay"></div>
+            <div class="modal-content small">
+                <div class="modal-header">
+                    <h3><i class="fas fa-ban"></i> Río Seco</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="block-icon">
+                        <i class="fas fa-otter"></i>
+                    </div>
+                    <h4>¡Te quedaste sin gotas!</h4>
+                    <p>Tu acceso gratuito ha terminado. Tu dirección IP ha sido registrada para prevenir múltiples cuentas.</p>
+                    <div class="ip-display">
+                        <code id="blockedIP">192.168.1.1</code>
+                    </div>
+                    <button class="btn-vip" id="blockVipBtn">
+                        <i class="fas fa-crown"></i>
+                        <span>Desbloquear con VIP</span>
+                    </button>
+                    <p class="block-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Sin VIP no podrás acceder desde esta IP
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="notifications" id="notifications"></div>
+    <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
