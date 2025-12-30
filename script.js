@@ -477,16 +477,21 @@ class OtterPlay {
         this.showNotification('¡Te quedaste sin gotas! IP bloqueada', 'error');
     }
     async upgradeToVIP() {
-        this.showNotification('Procesando pago...', 'info');
-        setTimeout(async () => {
-            this.state.isVip = true;
-            this.state.coins = this.config.VIP_COINS;
-            await this.saveUser();
-            this.updateUserUI();
-            this.hideUpgradeModal();
-            this.elements.blockModal.classList.add('hidden');
-            this.showNotification('¡Bienvenido a la Manada Otter VIP!', 'success');
-        }, 2000);
+        const selectedMethod = document.querySelector('.method-btn.active')?.dataset.method;
+        if (selectedMethod === 'transfermovil') {
+            this.showNotification('Realiza tu transferencia y envía el comprobante para activación', 'info');
+            setTimeout(async () => {
+                this.state.isVip = true;
+                this.state.coins = this.config.VIP_COINS;
+                await this.saveUser();
+                this.updateUserUI();
+                this.hideUpgradeModal();
+                this.elements.blockModal.classList.add('hidden');
+                this.showNotification('¡Bienvenido a la Manada Otter VIP!', 'success');
+            }, 2000);
+        } else {
+            this.showNotification('Por favor selecciona Transfermóvil como método de pago', 'warning');
+        }
     }
     async saveUser() {
         await this.db.user.put({
