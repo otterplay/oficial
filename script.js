@@ -325,14 +325,7 @@ class OtterPlay {
     }
 
     showUpgradeModal() {
-        // Aquí podrías actualizar dinámicamente el QR si fuera necesario
-        // Por ejemplo, codificando el ID de usuario en el QR
-        const qrData = `TRANSFERMOVIL_PAGO_OTTERPLAY_USER_${this.state.user.id}_AMOUNT_250`;
-        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}`;
-        
-        const qrImg = document.getElementById('paymentQR');
-        if (qrImg) qrImg.src = qrUrl;
-        
+        // Ahora usamos la imagen estática proporcionada por el usuario
         this.elements.upgradeModal.classList.remove('hidden');
     }
 
