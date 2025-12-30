@@ -173,15 +173,24 @@
                 <button id="closeUpgrade" style="background: none; border: none; color: white; cursor: pointer;"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-body" style="padding: 1rem; text-align: center;">
-                <p style="margin-bottom: 1.5rem;">Desbloquea todo el potencial de OtterPlay.</p>
-                <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: left; font-size: 0.9rem;">
-                    <p><i class="fas fa-check" style="color: var(--gold);"></i> 3000 gotas mensuales</p>
-                    <p><i class="fas fa-check" style="color: var(--gold);"></i> Sin límites de IP</p>
+                <p style="margin-bottom: 1rem;">Desbloquea todo el potencial de OtterPlay.</p>
+                
+                <div class="payment-qr-container" style="background: white; padding: 1rem; border-radius: 12px; margin-bottom: 1rem; display: inline-block;">
+                    <!-- Aquí irá el código QR de Transfermóvil -->
+                    <img id="paymentQR" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=TRANSFERMOVIL_PAYMENT_DATA" alt="QR de Pago" style="width: 200px; height: 200px; display: block;">
                 </div>
-                <div style="display: none;">
-                    <button class="method-btn"></button>
+                
+                <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; text-align: left; font-size: 0.85rem;">
+                    <p style="color: var(--gold); font-weight: bold; margin-bottom: 0.5rem;"><i class="fas fa-info-circle"></i> Instrucciones:</p>
+                    <ol style="padding-left: 1.2rem; color: var(--text-dim); display: grid; gap: 0.4rem;">
+                        <li>Escanea el QR con <strong>Transfermóvil</strong>.</li>
+                        <li>Realiza el pago de <strong>250 CUP</strong>.</li>
+                        <li>Presiona el botón de abajo para activar.</li>
+                    </ol>
                 </div>
-                <button class="btn btn-vip" id="confirmPayment" style="width: 100%;">Activar por 250 CUP</button>
+
+                <button class="btn btn-vip" id="confirmPayment" style="width: 100%;">He realizado el pago</button>
+                <p style="font-size: 0.7rem; color: var(--text-dim); margin-top: 0.8rem;">La activación es instantánea tras la confirmación.</p>
             </div>
         </div>
     </div>

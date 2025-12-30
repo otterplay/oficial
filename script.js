@@ -301,16 +301,39 @@ class OtterPlay {
     }
 
     async upgradeToVIP() {
-        this.showNotification('Procesando pago...', 'info');
+        // En una implementación real, aquí se verificaría el pago con una API
+        // Para esta versión, simulamos la confirmación tras el escaneo del QR
+        this.showNotification('Verificando transacción...', 'info');
+        
+        // Simulamos un pequeño retraso de verificación
         setTimeout(async () => {
             this.state.isVip = true;
             this.state.coins = this.config.VIP_COINS;
             await this.saveUser();
             this.updateUI();
+            
+            // Cerrar modales
             this.elements.upgradeModal.classList.add('hidden');
             this.elements.blockModal.classList.add('hidden');
-            this.showNotification('¡Ya eres VIP!', 'success');
-        }, 1500);
+            
+            this.showNotification('¡Pago confirmado! Ya eres VIP.', 'success');
+            
+            // Efecto visual de éxito
+            this.elements.userStatus.querySelector('#statusText').textContent = 'VIP Otter';
+            this.elements.userStatus.querySelector('#statusText').style.color = 'var(--gold)';
+        }, 2000);
+    }
+
+    showUpgradeModal() {
+        // Aquí podrías actualizar dinámicamente el QR si fuera necesario
+        // Por ejemplo, codificando el ID de usuario en el QR
+        const qrData = `TRANSFERMOVIL_PAGO_OTTERPLAY_USER_${this.state.user.id}_AMOUNT_250`;
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}`;
+        
+        const qrImg = document.getElementById('paymentQR');
+        if (qrImg) qrImg.src = qrUrl;
+        
+        this.elements.upgradeModal.classList.remove('hidden');
     }
 
     showNotification(msg, type) {
